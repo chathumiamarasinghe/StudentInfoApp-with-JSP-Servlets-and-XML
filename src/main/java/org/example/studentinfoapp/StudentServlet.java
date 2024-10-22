@@ -1,0 +1,188 @@
+package org.example.studentinfoapp;
+
+import org.w3c.dom.*;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.*;
+
+@WebServlet(name = "studentServlet", value = "/student-servlet")
+public class StudentServlet extends HttpServlet {
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Get form data
+        String name = request.getParameter("name");
+        String age = request.getParameter("age");
+        String email = request.getParameter("email");
+
+        // Validate form data
+        if (name == null || age == null || email == null || name.isEmpty() || age.isEmpty() || email.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "All fields are required");
+            return;
+        }
+
+        // Save data to XML
+        saveToXML(name, age, email);
+
+        // Redirect to view page
+        response.sendRedirect("student-servlet?action=view");
+    }
+
+    private void saveToXML(String name, String age, String email) throws IOException {
+        try {
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc;
+
+            File xmlFile = new File(getServletContext().getRealPath("/WEB-INF/students.xml"));
+            if (xmlFile.exists()) {
+                doc = dBuilder.parse(xmlFile);
+                doc.getDocumentElement().normalize();
+            } else {
+                doc = dBuilder.newDocument();
+                Element rootElement = doc.createElement("students");
+                doc.appendChild(rootElement);
+            }
+
+            Element student = doc.createElement("student");
+            student.setAttribute("id", String.valueOf(System.currentTimeMillis())); // Unique identifier
+
+            Element nameElement = doc.createElement("name");
+            nameElement.appendChild(doc.createTextNode(name));
+            student.appendChild(nameElement);
+
+            Element ageElement = doc.createElement("age");
+            ageElement.appendChild(doc.createTextNode(age));
+            student.appendChild(ageElement);
+
+            Element emailElement = doc.createElement("email");
+            emailElement.appendChild(doc.createTextNode(email));
+            student.appendChild(emailElement);
+
+            doc.getDocumentElement().appendChild(student);
+
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(xmlFile);
+            transformer.transform(source, result);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
+        if ("view".equals(action)) {
+            displayData(response);
+        } else if ("delete".equals(action)) {
+            String id = request.getParameter("id");
+            deleteStudent(id);
+            response.sendRedirect("student-servlet?action=view");
+        } else if ("update".equals(action)) {
+            String id = request.getParameter("id");
+            request.setAttribute("studentData", getStudentById(id));
+            request.getRequestDispatcher("updateStudent.jsp").forward(request, response);
+        } else {
+            displayData(response);
+        }
+    }
+
+    private void displayData(HttpServletResponse response) throws IOException {
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+        try {
+            File xmlFile = new File(getServletContext().getRealPath("/WEB-INF/students.xml"));
+            if (!xmlFile.exists()) {
+                out.println("<h2>No data available</h2>");
+                return;
+            }
+
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(xmlFile);
+            doc.getDocumentElement().normalize();
+
+            NodeList nList = doc.getElementsByTagName("student");
+
+            out.println("<html><body><h1>Student Information</h1>");
+            out.println("<table border='1'><tr><th>Name</th><th>Age</th><th>Email</th><th>Actions</th></tr>");
+
+            for (int temp = 0; temp < nList.getLength(); temp++) {
+                Node nNode = nList.item(temp);
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) nNode;
+                    String studentId = eElement.getAttribute("id");
+                    String name = eElement.getElementsByTagName("name").item(0).getTextContent();
+                    String age = eElement.getElementsByTagName("age").item(0).getTextContent();
+                    String email = eElement.getElementsByTagName("email").item(0).getTextContent();
+                    out.println("<tr><td>" + name + "</td><td>" + age + "</td><td>" + email + "</td>" +
+                            "<td><a href='student-servlet?action=update&id=" + studentId + "'>Update</a> " +
+                            "<a href='student-servlet?action=delete&id=" + studentId + "'>Delete</a></td></tr>");
+                }
+            }
+            out.println("</table></body></html>");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteStudent(String id) {
+        try {
+            File xmlFile = new File(getServletContext().getRealPath("/WEB-INF/students.xml"));
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(xmlFile);
+            doc.getDocumentElement().normalize();
+
+            NodeList nList = doc.getElementsByTagName("student");
+            for (int i = 0; i < nList.getLength(); i++) {
+                Element student = (Element) nList.item(i);
+                if (student.getAttribute("id").equals(id)) {
+                    student.getParentNode().removeChild(student);
+                    break;
+                }
+            }
+
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(xmlFile);
+            transformer.transform(source, result);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String[] getStudentById(String id) {
+        String[] studentData = new String[3]; // [name, age, email]
+        try {
+            File xmlFile = new File(getServletContext().getRealPath("/WEB-INF/students.xml"));
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(xmlFile);
+            doc.getDocumentElement().normalize();
+
+            NodeList nList = doc.getElementsByTagName("student");
+            for (int i = 0; i < nList.getLength(); i++) {
+                Element student = (Element) nList.item(i);
+                if (student.getAttribute("id").equals(id)) {
+                    studentData[0] = student.getElementsByTagName("name").item(0).getTextContent();
+                    studentData[1] = student.getElementsByTagName("age").item(0).getTextContent();
+                    studentData[2] = student.getElementsByTagName("email").item(0).getTextContent();
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return studentData;
+    }
+}
