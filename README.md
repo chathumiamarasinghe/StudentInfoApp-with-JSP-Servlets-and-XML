@@ -15,3 +15,24 @@ A simple web application built using JSP, Servlets, and XML for managing student
 - Maven
 - Git
 
+## Setup
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/chathumiamarasinghe/Web-Application-for-Data-Management-with-JSP-Servlets-and-XML.git
+   cd Web-Application-for-Data-Management-with-JSP-Servlets-and-XML
+Import into your IDE as a Maven project.
+
+Deploy the app to Apache Tomcat:
+
+Copy the WAR file or deploy directly from your IDE.
+Access the app via:
+
+arduino
+Copy code
+http://localhost:8080/StudentInfoApp
+Usage
+Navigate to the home page to add new student information.
+View and manage the list of students from the data management interface.
+Sort and filter student data using the provided options.
+
