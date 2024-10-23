@@ -8,3 +8,10 @@ A simple web application built using JSP, Servlets, and XML for managing student
 - Update existing student information.
 - Filter and sort student data.
 - Utilizes XML for data storage.
+
+ ## Prerequisites
+- Java 8+
+- Apache Tomcat 9+
+- Maven
+- Git
+
