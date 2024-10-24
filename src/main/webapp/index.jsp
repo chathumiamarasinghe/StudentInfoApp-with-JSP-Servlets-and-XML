@@ -89,7 +89,6 @@
     <h2>View Stored Data</h2>
     <div class="link-container">
         <a href="student-servlet?action=view">View Student Data</a><br>
-        <a href="updateStudent.jsp">Update Student Information</a>
     </div>
 </div>
 </body>
