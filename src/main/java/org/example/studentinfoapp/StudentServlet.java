@@ -16,6 +16,7 @@ public class StudentServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Get form data
+        String id = request.getParameter("id");
         String name = request.getParameter("name");
         String age = request.getParameter("age");
         String email = request.getParameter("email");
@@ -26,14 +27,19 @@ public class StudentServlet extends HttpServlet {
             return;
         }
 
-        // Save data to XML
-        saveToXML(name, age, email);
+        // If an ID is provided, it means we're updating an existing student
+        if (id != null && !id.isEmpty()) {
+            deleteStudent(id);  // Remove the old student record by ID
+        }
+
+        // Save the new or updated data to XML
+        saveToXML(id, name, age, email);
 
         // Redirect to view page
         response.sendRedirect("student-servlet?action=view");
     }
 
-    private void saveToXML(String name, String age, String email) throws IOException {
+    private void saveToXML(String id, String name, String age, String email) throws IOException {
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -50,7 +56,12 @@ public class StudentServlet extends HttpServlet {
             }
 
             Element student = doc.createElement("student");
-            student.setAttribute("id", String.valueOf(System.currentTimeMillis())); // Unique identifier
+
+            // If no ID is provided, generate a new one (this means it's a new student)
+            if (id == null || id.isEmpty()) {
+                id = String.valueOf(System.currentTimeMillis());
+            }
+            student.setAttribute("id", id); // Unique identifier
 
             Element nameElement = doc.createElement("name");
             nameElement.appendChild(doc.createTextNode(name));
@@ -111,8 +122,19 @@ public class StudentServlet extends HttpServlet {
 
             NodeList nList = doc.getElementsByTagName("student");
 
-            out.println("<html><body><h1>Student Information</h1>");
-            out.println("<table border='1'><tr><th>Name</th><th>Age</th><th>Email</th><th>Actions</th></tr>");
+            out.println("<html><head><title>Student Information</title>");
+            out.println("<style>");
+            out.println("body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; }");
+            out.println("h1 { color: #4d285b; }");
+            out.println("table { width: 100%; border-collapse: collapse; margin: 20px 0; }");
+            out.println("th, td { padding: 12px; text-align: left; border: 1px solid #ddd; }");
+            out.println("th { background-color: #4d285b; color: white; }");
+            out.println("tr:hover { background-color: #f1f1f1; }");
+            out.println("a { text-decoration: none; color: #4d285b; }");
+            out.println("a:hover { text-decoration: underline; }");
+            out.println("</style></head><body>");
+            out.println("<h1>Student Information</h1>");
+            out.println("<table><tr><th>Name</th><th>Age</th><th>Email</th><th>Actions</th></tr>");
 
             for (int temp = 0; temp < nList.getLength(); temp++) {
                 Node nNode = nList.item(temp);
