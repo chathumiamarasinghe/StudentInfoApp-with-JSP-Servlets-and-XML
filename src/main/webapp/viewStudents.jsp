@@ -39,6 +39,16 @@
             font-weight: bold;
         }
 
+        .search-bar {
+            margin-bottom: 20px;
+            padding: 10px;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
         .dashboard-table {
             width: 100%;
             border-collapse: collapse;
@@ -56,8 +66,6 @@
             color: white;
         }
 
-        
-
         .actions a {
             padding: 8px 12px;
             border-radius: 5px;
@@ -70,7 +78,7 @@
         }
 
         .actions .update-btn {
-            background-color: #28a745; /* Green for Update */
+            background-color: #28a745;
         }
 
         .actions .update-btn:hover {
@@ -78,7 +86,7 @@
         }
 
         .actions .delete-btn {
-            background-color: #dc3545; /* Red for Delete */
+            background-color: #dc3545;
         }
 
         .actions .delete-btn:hover {
@@ -91,12 +99,29 @@
             color: #fff;
             text-align: center;
         }
+        a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            text-align: center;
+            display: block;
+            margin-top: 20px;
+        }
+
+        a:hover {
+            color: #4d285b;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>View Students</h1>
+
+    <!-- Search Bar -->
+    <form action="viewstudents.jsp" method="get">
+        <input type="text" class="search-bar" name="search" placeholder="Search by name..." value="<%= request.getParameter("search") %>">
+    </form>
 
     <%-- Display data in a table --%>
     <%
@@ -108,6 +133,7 @@
             doc.getDocumentElement().normalize();
 
             NodeList nList = doc.getElementsByTagName("student");
+            String searchQuery = request.getParameter("search") != null ? request.getParameter("search").toLowerCase() : "";
     %>
 
     <table class="dashboard-table">
@@ -130,17 +156,25 @@
                         String name = eElement.getElementsByTagName("name").item(0).getTextContent();
                         String age = eElement.getElementsByTagName("age").item(0).getTextContent();
                         String email = eElement.getElementsByTagName("email").item(0).getTextContent();
+
+                        // Filter based on search query
+                        if (searchQuery.isEmpty() || name.toLowerCase().contains(searchQuery)) {
         %>
         <tr>
             <td><%= name %></td>
             <td><%= age %></td>
             <td><%= email %></td>
             <td class="actions">
-                <a href="student-servlet?action=update&id=<%= studentId %>" class="update-btn"><i class="fas fa-edit"></i> Update</a>
-                <a href="student-servlet?action=delete&id=<%= studentId %>" class="delete-btn"><i class="fas fa-trash-alt"></i> Delete</a>
+                <a href="student-servlet?action=update&id=<%= studentId %>" class="update-btn">Update</a>
+                <a href="student-servlet?action=delete&id=<%= studentId %>" class="delete-btn">Delete</a>
             </td>
         </tr>
-        <% } } } %>
+        <%
+                        }
+                    }
+                }
+            }
+        %>
         </tbody>
     </table>
 
@@ -149,6 +183,7 @@
     <% } %>
 
     <div class="footer">
+        <a href="dashboard.jsp">Go back</a>
         <p>&copy; 2024 Student Info App. All rights reserved.</p>
     </div>
 
