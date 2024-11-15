@@ -14,34 +14,39 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            background: url('https://cdnvb4.haiper.ai/jobs/670e6c20a34ea7ad88a4b270/672a087b9a435b4a95383a9f/0.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
         }
+
         .container {
-            background-color: #fff;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 500px;
-        }
-        h1 {
-            color: #4d285b;
+            margin: 100px auto;
+            padding: 40px 20px;
             text-align: center;
-            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
         }
+
+        h1 {
+            font-size: 36px;
+            color: #fff;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
         form {
             display: flex;
             flex-direction: column;
         }
+
         label {
             margin-bottom: 8px;
             font-weight: bold;
-            color: #333;
+            color: #fff;
         }
+
         input[type="text"],
         input[type="number"],
         input[type="email"] {
@@ -54,6 +59,7 @@
             color: #333;
             width: 100%;
         }
+
         input[type="submit"] {
             padding: 12px;
             background-color: #9610c7;
@@ -65,9 +71,11 @@
             border-radius: 5px;
             transition: background-color 0.3s;
         }
+
         input[type="submit"]:hover {
             background-color: #4d285b;
         }
+
         a {
             text-decoration: none;
             color: #9610c7;
@@ -76,6 +84,7 @@
             display: block;
             margin-top: 20px;
         }
+
         a:hover {
             color: #4d285b;
         }
