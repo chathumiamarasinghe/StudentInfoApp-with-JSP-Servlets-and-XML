@@ -64,8 +64,7 @@ Copy the WAR file or deploy directly from your IDE.
 
 Access the app via:
 
-bash
-Copy code
+
 http://localhost:8080/StudentInfoApp
 Usage
 Navigate to the home page to add new student information.
