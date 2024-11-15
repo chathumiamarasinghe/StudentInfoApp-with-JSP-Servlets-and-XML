@@ -10,6 +10,7 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
+import java.util.regex.Pattern;
 
 @WebServlet(name = "studentServlet", value = "/student-servlet")
 public class StudentServlet extends HttpServlet {
@@ -22,8 +23,9 @@ public class StudentServlet extends HttpServlet {
         String email = request.getParameter("email");
 
         // Validate form data
-        if (name == null || age == null || email == null || name.isEmpty() || age.isEmpty() || email.isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "All fields are required");
+        String validationError = validateInput(name, age, email);
+        if (!validationError.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, validationError);
             return;
         }
 
@@ -36,7 +38,35 @@ public class StudentServlet extends HttpServlet {
         saveToXML(id, name, age, email);
 
         // Redirect to view page
-        response.sendRedirect("student-servlet?action=view");
+        response.sendRedirect("viewStudents");
+    }
+
+    private String validateInput(String name, String age, String email) {
+        if (name == null || age == null || email == null || name.isEmpty() || age.isEmpty() || email.isEmpty()) {
+            return "All fields are required.";
+        }
+
+        // Validate name (only alphabetic characters allowed)
+        if (!Pattern.matches("^[A-Za-z ]+$", name)) {
+            return "Name can only contain alphabetic characters.";
+        }
+
+        // Validate age (should be a number between 1 and 150)
+        try {
+            int ageValue = Integer.parseInt(age);
+            if (ageValue < 1 || ageValue > 150) {
+                return "Age must be a number between 1 and 150.";
+            }
+        } catch (NumberFormatException e) {
+            return "Age must be a valid number.";
+        }
+
+        // Validate email (basic email format)
+        if (!Pattern.matches("^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$", email)) {
+            return "Invalid email format.";
+        }
+
+        return ""; // No errors
     }
 
     private void saveToXML(String id, String name, String age, String email) throws IOException {
@@ -95,7 +125,7 @@ public class StudentServlet extends HttpServlet {
         } else if ("delete".equals(action)) {
             String id = request.getParameter("id");
             deleteStudent(id);
-            response.sendRedirect("student-servlet?action=view");
+            response.sendRedirect("viewStudents.jsp");
         } else if ("update".equals(action)) {
             String id = request.getParameter("id");
             request.setAttribute("studentData", getStudentById(id));
