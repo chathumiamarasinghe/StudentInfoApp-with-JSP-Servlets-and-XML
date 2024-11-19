@@ -38,7 +38,7 @@ public class StudentServlet extends HttpServlet {
         saveToXML(id, name, age, email);
 
         // Redirect to view page
-        response.sendRedirect("viewStudents");
+        response.sendRedirect("viewStudents.jsp");
     }
 
     private String validateInput(String name, String age, String email) {
