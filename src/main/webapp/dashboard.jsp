@@ -82,26 +82,26 @@
     <h1>Welcome to the Student Information Dashboard</h1>
 
     <div class="card-container">
-        <!-- Add New Student Card -->
+
         <div class="card">
             <h2>Add New Student</h2>
             <a href="index.jsp">Add Student</a>
         </div>
 
-        <!-- View Student Data Card -->
+
         <div class="card">
             <h2>View Student Data</h2>
             <a href="viewStudents.jsp">View Data</a>
         </div>
 
-        <!-- Update Student Data Card -->
+
         <div class="card">
             <h2>Update Student Data</h2>
             <a href="student-servlet?action=update">Update Data</a>
         </div>
     </div>
 
-    <!-- Footer -->
+
     <div class="footer">
         <p>&copy; 2024 Student Info App. All rights reserved.</p>
     </div>
