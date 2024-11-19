@@ -118,12 +118,11 @@
 <div class="container">
     <h1>View Students</h1>
 
-    <!-- Search Bar -->
+
     <form action="viewStudents.jsp" method="get">
         <input type="text" class="search-bar" name="search" placeholder="Search by name..." value="<%= request.getParameter("search") %>">
     </form>
 
-    <%-- Display data in a table --%>
     <%
         File xmlFile = new File(application.getRealPath("/WEB-INF/students.xml"));
         if (xmlFile.exists()) {
