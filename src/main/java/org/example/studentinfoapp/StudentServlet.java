@@ -15,29 +15,30 @@ import java.util.regex.Pattern;
 @WebServlet(name = "studentServlet", value = "/student-servlet")
 public class StudentServlet extends HttpServlet {
 
+    //for adding or updating student data
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Get form data
+
+        // Retrieve parameters from the form
         String id = request.getParameter("id");
         String name = request.getParameter("name");
         String age = request.getParameter("age");
         String email = request.getParameter("email");
 
-        // Validate form data
+
+        //validations
         String validationError = validateInput(name, age, email);
         if (!validationError.isEmpty()) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, validationError);
             return;
         }
 
-        // If an ID is provided, it means we're updating an existing student
         if (id != null && !id.isEmpty()) {
             deleteStudent(id);  // Remove the old student record by ID
         }
 
-        // Save the new or updated data to XML
         saveToXML(id, name, age, email);
 
-        // Redirect to view page
+
         response.sendRedirect("viewStudents.jsp");
     }
 
@@ -46,27 +47,27 @@ public class StudentServlet extends HttpServlet {
             return "All fields are required.";
         }
 
-        // Validate name (only alphabetic characters allowed)
+
         if (!Pattern.matches("^[A-Za-z ]+$", name)) {
             return "Name can only contain alphabetic characters.";
         }
 
-        // Validate age (should be a number between 1 and 150)
+
         try {
             int ageValue = Integer.parseInt(age);
-            if (ageValue < 1 || ageValue > 150) {
-                return "Age must be a number between 1 and 150.";
+            if (ageValue < 1 || ageValue > 25) {
+                return "Age must be a number between 1 and 25.";
             }
         } catch (NumberFormatException e) {
             return "Age must be a valid number.";
         }
 
-        // Validate email (basic email format)
+
         if (!Pattern.matches("^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$", email)) {
             return "Invalid email format.";
         }
 
-        return ""; // No errors
+        return "";
     }
 
     private void saveToXML(String id, String name, String age, String email) throws IOException {
@@ -87,7 +88,7 @@ public class StudentServlet extends HttpServlet {
 
             Element student = doc.createElement("student");
 
-            // If no ID is provided, generate a new one (this means it's a new student)
+
             if (id == null || id.isEmpty()) {
                 id = String.valueOf(System.currentTimeMillis());
             }
@@ -118,6 +119,7 @@ public class StudentServlet extends HttpServlet {
         }
     }
 
+    //GET requests for viewing, deleting, or updating student data
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
         if ("view".equals(action)) {
@@ -152,7 +154,7 @@ public class StudentServlet extends HttpServlet {
 
             NodeList nList = doc.getElementsByTagName("student");
 
-            out.println("<html><head><title>Student Information</title>");
+            /*out.println("<html><head><title>Student Information</title>");
             out.println("<style>");
             out.println("body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; }");
             out.println("h1 { color: #4d285b; }");
@@ -164,9 +166,9 @@ public class StudentServlet extends HttpServlet {
             out.println("a:hover { text-decoration: underline; }");
             out.println("</style></head><body>");
             out.println("<h1>Student Information</h1>");
-            out.println("<table><tr><th>Name</th><th>Age</th><th>Email</th><th>Actions</th></tr>");
+            out.println("<table><tr><th>Name</th><th>Age</th><th>Email</th><th>Actions</th></tr>");*/
 
-            for (int temp = 0; temp < nList.getLength(); temp++) {
+            /*for (int temp = 0; temp < nList.getLength(); temp++) {
                 Node nNode = nList.item(temp);
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element eElement = (Element) nNode;
@@ -179,7 +181,7 @@ public class StudentServlet extends HttpServlet {
                             "<a href='student-servlet?action=delete&id=" + studentId + "'>Delete</a></td></tr>");
                 }
             }
-            out.println("</table></body></html>");
+            out.println("</table></body></html>");*/
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -202,6 +204,7 @@ public class StudentServlet extends HttpServlet {
                 }
             }
 
+            // Save the updated document back to the XML file
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(doc);
@@ -213,6 +216,7 @@ public class StudentServlet extends HttpServlet {
         }
     }
 
+    //retrieves the data
     private String[] getStudentById(String id) {
         String[] studentData = new String[3]; // [name, age, email]
         try {
