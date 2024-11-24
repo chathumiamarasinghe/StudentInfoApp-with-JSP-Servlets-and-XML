@@ -120,7 +120,7 @@
         <input type="text" id="name" name="name" placeholder="Enter full name" required aria-label="Student Name">
 
         <label for="age">Age:</label>
-        <input type="number" id="age" name="age" placeholder="Enter age" required aria-label="Age" min="1" max="120">
+        <input type="number" id="age" name="age" placeholder="Enter age" required aria-label="Age" min="18" max="30">
 
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" placeholder="Enter email address" required aria-label="Email">
