@@ -18,14 +18,33 @@
         .container {
             width: 100%;
             max-width: 1200px;
-            margin: 150px auto;
+            margin: 100px auto;
             padding: 50px 20px;
             text-align: center;
             background: rgba(0, 0, 0, 0.5);
             border-radius: 10px;
         }
 
-        h1 {
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .header img {
+            width: 60px;
+            height: 60px;
+            margin-right: 15px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        h1.welcome {
             font-size: 36px;
             color: #fff;
             margin-bottom: 30px;
@@ -79,21 +98,26 @@
 </head>
 <body>
 <div class="container">
-    <h1>Welcome to the Student Information Dashboard</h1>
+
+    <div class="header">
+        <img src="https://cdnvb4.haiper.ai/jobs/670e6c20a34ea7ad88a4b270/672a097a98a5d5efd5dd00aa/0.jpg" alt="JavaEE Green University Logo">
+        <h1>JavaEE Green University</h1>
+    </div>
+
+
+    <h1 class="welcome">Welcome to the Student Information Dashboard</h1>
+
 
     <div class="card-container">
-
         <div class="card">
             <h2>Add New Student</h2>
             <a href="index.jsp">Add Student</a>
         </div>
 
-
         <div class="card">
             <h2>View Student Data</h2>
             <a href="viewStudents.jsp">View Data</a>
         </div>
-
 
         <div class="card">
             <h2>Update Student Data</h2>
@@ -103,7 +127,7 @@
 
 
     <div class="footer">
-        <p>&copy; 2024 Student Info App. All rights reserved.</p>
+        <p>&copy; 2024 JavaEE Green University Student Info System. All rights reserved</p>
     </div>
 </div>
 </body>
