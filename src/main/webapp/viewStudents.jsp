@@ -120,8 +120,15 @@
 
 
     <form action="viewStudents.jsp" method="get">
-        <input type="text" class="search-bar" name="search" placeholder="Search by name..." value="<%= request.getParameter("search") %>">
+        <input type="hidden" name="page" value="<%= request.getParameter("page") != null ? request.getParameter("page") : "1" %>">
+        <input type="text"
+               class="search-bar"
+               name="search"
+               placeholder="Search by name..."
+               value="<%= request.getParameter("search") == null ? "" : request.getParameter("search") %>">
+
     </form>
+
 
     <%
         File xmlFile = new File(application.getRealPath("/WEB-INF/students.xml"));
@@ -133,6 +140,7 @@
 
             NodeList nList = doc.getElementsByTagName("student");
             String searchQuery = request.getParameter("search") != null ? request.getParameter("search").toLowerCase() : "";
+            boolean hasResults = false;
     %>
 
     <table class="dashboard-table">
@@ -158,6 +166,7 @@
 
                         // Filter based on search query
                         if (searchQuery.isEmpty() || name.toLowerCase().contains(searchQuery)) {
+                            hasResults = true;
         %>
         <tr>
             <td><%= name %></td>
@@ -176,6 +185,10 @@
         %>
         </tbody>
     </table>
+
+    <% if (!hasResults) { %>
+    <p style="color: red; font-weight: bold;">No students found matching "<%= searchQuery %>".</p>
+    <% } %>
 
     <% } else { %>
     <p>No student data available.</p>
