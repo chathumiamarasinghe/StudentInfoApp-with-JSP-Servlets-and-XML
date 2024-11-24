@@ -55,8 +55,8 @@ public class StudentServlet extends HttpServlet {
 
         try {
             int ageValue = Integer.parseInt(age);
-            if (ageValue < 1 || ageValue > 25) {
-                return "Age must be a number between 1 and 25.";
+            if (ageValue < 1 || ageValue > 30) {
+                return "Age must be a number between 1 and 30.";
             }
         } catch (NumberFormatException e) {
             return "Age must be a valid number.";
