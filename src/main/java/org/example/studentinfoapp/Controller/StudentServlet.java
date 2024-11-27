@@ -1,4 +1,4 @@
-package org.example.studentinfoapp;
+package org.example.studentinfoapp.Controller;
 
 import org.w3c.dom.*;
 import javax.servlet.ServletException;
@@ -154,34 +154,6 @@ public class StudentServlet extends HttpServlet {
 
             NodeList nList = doc.getElementsByTagName("student");
 
-            /*out.println("<html><head><title>Student Information</title>");
-            out.println("<style>");
-            out.println("body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; }");
-            out.println("h1 { color: #4d285b; }");
-            out.println("table { width: 100%; border-collapse: collapse; margin: 20px 0; }");
-            out.println("th, td { padding: 12px; text-align: left; border: 1px solid #ddd; }");
-            out.println("th { background-color: #4d285b; color: white; }");
-            out.println("tr:hover { background-color: #f1f1f1; }");
-            out.println("a { text-decoration: none; color: #4d285b; }");
-            out.println("a:hover { text-decoration: underline; }");
-            out.println("</style></head><body>");
-            out.println("<h1>Student Information</h1>");
-            out.println("<table><tr><th>Name</th><th>Age</th><th>Email</th><th>Actions</th></tr>");*/
-
-            /*for (int temp = 0; temp < nList.getLength(); temp++) {
-                Node nNode = nList.item(temp);
-                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-                    Element eElement = (Element) nNode;
-                    String studentId = eElement.getAttribute("id");
-                    String name = eElement.getElementsByTagName("name").item(0).getTextContent();
-                    String age = eElement.getElementsByTagName("age").item(0).getTextContent();
-                    String email = eElement.getElementsByTagName("email").item(0).getTextContent();
-                    out.println("<tr><td>" + name + "</td><td>" + age + "</td><td>" + email + "</td>" +
-                            "<td><a href='student-servlet?action=update&id=" + studentId + "'>Update</a> " +
-                            "<a href='student-servlet?action=delete&id=" + studentId + "'>Delete</a></td></tr>");
-                }
-            }
-            out.println("</table></body></html>");*/
         } catch (Exception e) {
             e.printStackTrace();
         }
